@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import Sidebar from '@/components/Sidebar';
 import ChatContainer from '@/components/ChatContainer';
@@ -8,6 +8,8 @@ import { useChat } from '@/hooks/useChat';
 const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const isMobile = useIsMobile();
+  const messageInputRef = useRef<HTMLInputElement>(null);
+  
   const { 
     messages, 
     savedMessages, 
@@ -29,6 +31,20 @@ const Index = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const handleAskQuestion = () => {
+    // Close sidebar if on mobile
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+    
+    // Focus the message input
+    setTimeout(() => {
+      if (messageInputRef.current) {
+        messageInputRef.current.focus();
+      }
+    }, 100);
+  };
+
   return (
     <div className="h-screen flex overflow-hidden bg-insight-background">
       {/* Sidebar - hidden on mobile when not active */}
@@ -44,6 +60,7 @@ const Index = () => {
           onHistoryItemClick={handleHistoryItemClick} 
           onToggleSidebar={toggleSidebar}
           onClearHistory={clearMessages}
+          onAskQuestion={handleAskQuestion}
           isMobile={isMobile}
         />
       </div>
@@ -64,6 +81,7 @@ const Index = () => {
         isLoading={isLoading}
         onSaveMessage={handleSaveMessage}
         isMobile={isMobile}
+        messageInputRef={messageInputRef}
       />
     </div>
   );

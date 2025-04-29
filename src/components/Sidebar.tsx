@@ -19,6 +19,7 @@ interface SidebarProps {
   onHistoryItemClick: (message: string) => void;
   onToggleSidebar: () => void;
   onClearHistory: () => void;
+  onAskQuestion: () => void;
   isMobile: boolean;
 }
 
@@ -28,6 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   onHistoryItemClick, 
   onToggleSidebar,
   onClearHistory,
+  onAskQuestion,
   isMobile 
 }) => {
   // Group chat history by date
@@ -137,7 +139,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       </Tabs>
 
       <div className="p-3 border-t border-insight-border">
-        <Button className="insight-button w-full">
+        <Button className="insight-button w-full" onClick={onAskQuestion}>
           Ask Question
         </Button>
       </div>

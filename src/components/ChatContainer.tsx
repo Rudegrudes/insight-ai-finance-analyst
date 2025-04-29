@@ -21,6 +21,7 @@ interface ChatContainerProps {
   isLoading: boolean;
   onSaveMessage: (messageId: string) => void;
   isMobile: boolean;
+  messageInputRef?: React.RefObject<HTMLInputElement>;
 }
 
 const ChatContainer: React.FC<ChatContainerProps> = ({
@@ -29,7 +30,8 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
   onToggleSidebar,
   isLoading,
   onSaveMessage,
-  isMobile
+  isMobile,
+  messageInputRef
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -99,7 +101,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
       </ScrollArea>
 
       <div className="p-4 border-t border-insight-border">
-        <MessageInput onSendMessage={onSendMessage} isLoading={isLoading} />
+        <MessageInput onSendMessage={onSendMessage} isLoading={isLoading} inputRef={messageInputRef} />
         <div className="text-xs text-center text-muted-foreground mt-3">
           Powered by OpenAI + Finnhub API + FMP API
         </div>

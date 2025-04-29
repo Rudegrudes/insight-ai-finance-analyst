@@ -7,9 +7,10 @@ import { SendIcon } from 'lucide-react';
 interface MessageInputProps {
   onSendMessage: (message: string) => void;
   isLoading: boolean;
+  inputRef?: React.RefObject<HTMLInputElement>;
 }
 
-const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, isLoading }) => {
+const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, isLoading, inputRef }) => {
   const [inputValue, setInputValue] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -28,6 +29,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, isLoading })
         placeholder="Enter stock symbol (e.g., AAPL) or forex pair (e.g., EUR/USD)..."
         className="insight-input flex-grow"
         disabled={isLoading}
+        ref={inputRef}
       />
       <Button 
         type="submit" 
