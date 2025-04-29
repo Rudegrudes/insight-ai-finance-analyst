@@ -26,7 +26,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, isLoading, i
       <Input
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
-        placeholder="Enter stock symbol (e.g., AAPL) or forex pair (e.g., EUR/USD)..."
+        placeholder="Digite o símbolo da ação (ex: AAPL) ou par de moedas (ex: EUR/USD)..."
         className="insight-input flex-grow"
         disabled={isLoading}
         ref={inputRef}
@@ -37,7 +37,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, isLoading, i
         disabled={isLoading || !inputValue.trim()}
       >
         <SendIcon size={18} className="mr-2" />
-        {isLoading ? 'Analyzing...' : 'Analyze'}
+        {isLoading ? 'Analisando...' : 'Analisar'}
       </Button>
     </form>
   );

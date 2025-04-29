@@ -69,11 +69,11 @@ const Sidebar: React.FC<SidebarProps> = ({
         <TabsList className="grid grid-cols-2 mx-3 my-2">
           <TabsTrigger value="history">
             <HistoryIcon size={14} className="mr-2" />
-            History
+            Histórico
           </TabsTrigger>
           <TabsTrigger value="favorites">
             <BookmarkIcon size={14} className="mr-2" />
-            Favorites
+            Favoritos
           </TabsTrigger>
         </TabsList>
 
@@ -90,7 +90,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               ))
             ) : (
               <div className="text-sm text-muted-foreground text-center py-8">
-                Your search history will appear here
+                Seu histórico de pesquisas aparecerá aqui
               </div>
             )}
           </ScrollArea>
@@ -103,7 +103,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               className="mt-2 mb-2 flex items-center gap-2 text-muted-foreground hover:text-destructive"
             >
               <Trash2Icon size={14} />
-              Clear History
+              Limpar Histórico
             </Button>
           )}
         </TabsContent>
@@ -120,7 +120,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                       className="p-2 hover:bg-secondary rounded text-sm"
                     >
                       <div className="font-medium truncate">{
-                        chatHistory.find(m => m.id === message.id.replace('-response', ''))?.content || 'Saved Analysis'
+                        chatHistory.find(m => m.id === message.id.replace('-response', ''))?.content || 'Análise Salva'
                       }</div>
                       <div className="text-xs text-muted-foreground">
                         {message.timestamp.toLocaleDateString()}
@@ -131,7 +131,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               </div>
             ) : (
               <div className="text-sm text-muted-foreground text-center py-8">
-                Your saved analyses will appear here
+                Suas análises salvas aparecerão aqui
               </div>
             )}
           </ScrollArea>
@@ -140,7 +140,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       <div className="p-3 border-t border-insight-border">
         <Button className="insight-button w-full" onClick={onAskQuestion}>
-          Ask Question
+          Fazer Pergunta
         </Button>
       </div>
     </div>

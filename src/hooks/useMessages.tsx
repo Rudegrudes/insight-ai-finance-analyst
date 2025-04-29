@@ -41,7 +41,7 @@ export function useMessages() {
         })));
       }
     } catch (error) {
-      console.error('Error loading saved chats:', error);
+      console.error('Erro ao carregar conversas salvas:', error);
     }
   }, []);
 
@@ -50,7 +50,7 @@ export function useMessages() {
     try {
       localStorage.setItem('insight-finance-chats', JSON.stringify(messages));
     } catch (error) {
-      console.error('Error saving chats:', error);
+      console.error('Erro ao salvar conversas:', error);
     }
   }, [messages]);
 
@@ -59,7 +59,7 @@ export function useMessages() {
     try {
       localStorage.setItem('insight-finance-favorites', JSON.stringify(savedMessages));
     } catch (error) {
-      console.error('Error saving favorites:', error);
+      console.error('Erro ao salvar favoritos:', error);
     }
   }, [savedMessages]);
 
@@ -74,14 +74,14 @@ export function useMessages() {
           if (newSavedState) {
             setSavedMessages(prev => [...prev, { ...msg, isSaved: true }]);
             toast({
-              title: "Saved",
-              description: "Analysis added to favorites.",
+              title: "Salva",
+              description: "Análise adicionada aos favoritos.",
             });
           } else {
             setSavedMessages(prev => prev.filter(saved => saved.id !== messageId));
             toast({
-              title: "Removed",
-              description: "Analysis removed from favorites.",
+              title: "Removida",
+              description: "Análise removida dos favoritos.",
             });
           }
           
@@ -96,8 +96,8 @@ export function useMessages() {
   const clearMessages = () => {
     setMessages([]);
     toast({
-      title: "Cleared",
-      description: "Chat history has been cleared.",
+      title: "Limpo",
+      description: "O histórico de conversas foi limpo.",
     });
   };
 

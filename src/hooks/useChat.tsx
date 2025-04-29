@@ -36,16 +36,16 @@ export function useChat() {
 
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
-      console.error('Error generating analysis:', error);
+      console.error('Erro ao gerar análise:', error);
       toast({
-        title: "Error",
-        description: "Failed to generate analysis. Please try again.",
+        title: "Erro",
+        description: "Falha ao gerar análise. Por favor, tente novamente.",
         variant: "destructive"
       });
 
       const errorMessage: ChatMessage = {
         id: `${userMessage.id}-error`,
-        content: "Sorry, I couldn't generate an analysis at this time. Please try again later.",
+        content: "Desculpe, não consegui gerar uma análise neste momento. Por favor, tente novamente mais tarde.",
         type: 'ai',
         timestamp: new Date()
       };

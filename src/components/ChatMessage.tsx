@@ -23,13 +23,13 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     <div className={`chat-message ${type === 'user' ? 'user-message' : 'ai-message'}`}>
       <div className="flex justify-between items-start">
         <div className="font-medium text-sm text-muted-foreground mb-2">
-          {type === 'user' ? 'You' : 'Insight Finance AI'} • {timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+          {type === 'user' ? 'Você' : 'Insight Finance AI'} • {timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
         </div>
         {type === 'ai' && (
           <button 
             onClick={onSaveMessage}
             className="text-muted-foreground hover:text-insight transition-colors"
-            title={isSaved ? "Remove from favorites" : "Save to favorites"}
+            title={isSaved ? "Remover dos favoritos" : "Salvar nos favoritos"}
           >
             <BookmarkIcon size={16} className={isSaved ? "fill-insight text-insight" : ""} />
           </button>

@@ -62,23 +62,23 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
       <ScrollArea className="flex-1 p-4">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center p-4">
-            <h2 className="text-2xl font-bold mb-2">Welcome to Insight Finance AI</h2>
+            <h2 className="text-2xl font-bold mb-2">Bem-vindo ao Insight Finance AI</h2>
             <p className="text-muted-foreground max-w-md mb-4">
-              Ask questions about stocks or forex pairs for detailed fundamental analysis
+              Faça perguntas sobre ações ou pares de moedas para análise fundamentalista detalhada
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-xl">
               <div className="border border-insight-border rounded p-3 bg-white">
-                <h3 className="font-medium mb-1">Stocks Examples:</h3>
+                <h3 className="font-medium mb-1">Exemplos de Ações:</h3>
                 <ul className="text-sm text-muted-foreground">
-                  <li>"Analyze AAPL stock"</li>
-                  <li>"Give me a fundamental analysis of MSFT"</li>
+                  <li>"Analisar ação AAPL"</li>
+                  <li>"Análise fundamentalista de MSFT"</li>
                 </ul>
               </div>
               <div className="border border-insight-border rounded p-3 bg-white">
-                <h3 className="font-medium mb-1">Forex Examples:</h3>
+                <h3 className="font-medium mb-1">Exemplos de Forex:</h3>
                 <ul className="text-sm text-muted-foreground">
-                  <li>"Analysis of EUR/USD"</li>
-                  <li>"What's your outlook on GBP/JPY?"</li>
+                  <li>"Análise de EUR/USD"</li>
+                  <li>"Qual a perspectiva para GBP/JPY?"</li>
                 </ul>
               </div>
             </div>
@@ -103,7 +103,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
       <div className="p-4 border-t border-insight-border">
         <MessageInput onSendMessage={onSendMessage} isLoading={isLoading} inputRef={messageInputRef} />
         <div className="text-xs text-center text-muted-foreground mt-3">
-          Powered by OpenAI + Finnhub API + FMP API
+          Desenvolvido com OpenAI + Finnhub API + FMP API
         </div>
       </div>
     </div>
