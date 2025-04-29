@@ -1,0 +1,134 @@
+
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { HistoryIcon, BookmarkIcon, XIcon } from 'lucide-react';
+
+export interface ChatMessage {
+  id: string;
+  content: string;
+  type: 'user' | 'ai';
+  timestamp: Date;
+  isSaved?: boolean;
+}
+
+interface SidebarProps {
+  chatHistory: ChatMessage[];
+  savedMessages: ChatMessage[];
+  onHistoryItemClick: (message: string) => void;
+  onToggleSidebar: () => void;
+  isMobile: boolean;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ 
+  chatHistory, 
+  savedMessages,
+  onHistoryItemClick, 
+  onToggleSidebar,
+  isMobile 
+}) => {
+  // Group chat history by date
+  const groupedHistory = chatHistory
+    .filter(msg => msg.type === 'user')
+    .reduce((groups: Record<string, ChatMessage[]>, message) => {
+      const date = message.timestamp.toLocaleDateString();
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(message);
+      return groups;
+    }, {});
+
+  const renderHistoryItem = (message: ChatMessage) => (
+    <div 
+      key={message.id}
+      onClick={() => onHistoryItemClick(message.content)}
+      className="p-2 hover:bg-secondary rounded cursor-pointer text-sm truncate"
+    >
+      {message.content}
+    </div>
+  );
+
+  return (
+    <div className="w-64 bg-white border-r border-insight-border flex flex-col h-full">
+      <div className="p-3 border-b border-insight-border flex justify-between items-center">
+        <h2 className="font-semibold text-lg">Insight Finance AI</h2>
+        {isMobile && (
+          <Button variant="ghost" size="icon" onClick={onToggleSidebar} className="h-8 w-8">
+            <XIcon size={18} />
+          </Button>
+        )}
+      </div>
+
+      <Tabs defaultValue="history" className="flex-1 flex flex-col">
+        <TabsList className="grid grid-cols-2 mx-3 my-2">
+          <TabsTrigger value="history">
+            <HistoryIcon size={14} className="mr-2" />
+            History
+          </TabsTrigger>
+          <TabsTrigger value="favorites">
+            <BookmarkIcon size={14} className="mr-2" />
+            Favorites
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="history" className="flex-1 px-3">
+          <ScrollArea className="h-full pr-3">
+            {Object.entries(groupedHistory).length > 0 ? (
+              Object.entries(groupedHistory).map(([date, messages]) => (
+                <div key={date} className="mb-4">
+                  <h3 className="text-xs text-muted-foreground font-medium mb-1">{date}</h3>
+                  <div className="space-y-1">
+                    {messages.map(renderHistoryItem)}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-sm text-muted-foreground text-center py-8">
+                Your search history will appear here
+              </div>
+            )}
+          </ScrollArea>
+        </TabsContent>
+
+        <TabsContent value="favorites" className="flex-1 px-3">
+          <ScrollArea className="h-full pr-3">
+            {savedMessages.length > 0 ? (
+              <div className="space-y-1">
+                {savedMessages
+                  .filter(msg => msg.type === 'ai')
+                  .map(message => (
+                    <div 
+                      key={message.id}
+                      className="p-2 hover:bg-secondary rounded text-sm"
+                    >
+                      <div className="font-medium truncate">{
+                        chatHistory.find(m => m.id === message.id.replace('-response', ''))?.content || 'Saved Analysis'
+                      }</div>
+                      <div className="text-xs text-muted-foreground">
+                        {message.timestamp.toLocaleDateString()}
+                      </div>
+                    </div>
+                  ))
+                }
+              </div>
+            ) : (
+              <div className="text-sm text-muted-foreground text-center py-8">
+                Your saved analyses will appear here
+              </div>
+            )}
+          </ScrollArea>
+        </TabsContent>
+      </Tabs>
+
+      <div className="p-3 border-t border-insight-border">
+        <Button className="insight-button w-full">
+          Ask Question
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default Sidebar;
