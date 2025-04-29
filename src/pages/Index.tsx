@@ -14,7 +14,8 @@ const Index = () => {
     isLoading, 
     handleSendMessage, 
     handleHistoryItemClick,
-    handleSaveMessage
+    handleSaveMessage,
+    clearMessages
   } = useChat();
 
   // Auto-close sidebar on mobile when sending a message
@@ -42,6 +43,7 @@ const Index = () => {
           savedMessages={savedMessages}
           onHistoryItemClick={handleHistoryItemClick} 
           onToggleSidebar={toggleSidebar}
+          onClearHistory={clearMessages}
           isMobile={isMobile}
         />
       </div>

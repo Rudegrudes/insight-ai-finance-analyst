@@ -6,7 +6,7 @@ import { generateFinancialAnalysis } from '@/services/financialAnalysis';
 import { useMessages, type ChatMessage } from '@/hooks/useMessages';
 
 export function useChat() {
-  const { messages, savedMessages, isLoading, setIsLoading, setMessages, handleSaveMessage } = useMessages();
+  const { messages, savedMessages, isLoading, setIsLoading, setMessages, handleSaveMessage, clearMessages } = useMessages();
   const { toast } = useToast();
 
   const handleSendMessage = async (message: string) => {
@@ -66,6 +66,7 @@ export function useChat() {
     isLoading,
     handleSendMessage,
     handleHistoryItemClick,
-    handleSaveMessage
+    handleSaveMessage,
+    clearMessages
   };
 }

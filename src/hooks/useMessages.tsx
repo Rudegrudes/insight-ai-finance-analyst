@@ -92,6 +92,15 @@ export function useMessages() {
     );
   };
 
+  // Add a function to clear messages
+  const clearMessages = () => {
+    setMessages([]);
+    toast({
+      title: "Cleared",
+      description: "Chat history has been cleared.",
+    });
+  };
+
   // Apply any saved message states to the current messages
   const messagesWithSavedState = messages.map(msg => {
     const isSaved = savedMessages.some(saved => saved.id === msg.id);
@@ -104,6 +113,7 @@ export function useMessages() {
     isLoading,
     setIsLoading,
     setMessages,
-    handleSaveMessage
+    handleSaveMessage,
+    clearMessages
   };
 }

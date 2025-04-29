@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { HistoryIcon, BookmarkIcon, XIcon } from 'lucide-react';
+import { HistoryIcon, BookmarkIcon, XIcon, Trash2Icon } from 'lucide-react';
 
 export interface ChatMessage {
   id: string;
@@ -18,6 +18,7 @@ interface SidebarProps {
   savedMessages: ChatMessage[];
   onHistoryItemClick: (message: string) => void;
   onToggleSidebar: () => void;
+  onClearHistory: () => void;
   isMobile: boolean;
 }
 
@@ -26,6 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   savedMessages,
   onHistoryItemClick, 
   onToggleSidebar,
+  onClearHistory,
   isMobile 
 }) => {
   // Group chat history by date
@@ -73,8 +75,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="history" className="flex-1 px-3">
-          <ScrollArea className="h-full pr-3">
+        <TabsContent value="history" className="flex-1 px-3 flex flex-col">
+          <ScrollArea className="h-full pr-3 flex-1">
             {Object.entries(groupedHistory).length > 0 ? (
               Object.entries(groupedHistory).map(([date, messages]) => (
                 <div key={date} className="mb-4">
@@ -90,6 +92,18 @@ const Sidebar: React.FC<SidebarProps> = ({
               </div>
             )}
           </ScrollArea>
+          
+          {Object.entries(groupedHistory).length > 0 && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={onClearHistory} 
+              className="mt-2 mb-2 flex items-center gap-2 text-muted-foreground hover:text-destructive"
+            >
+              <Trash2Icon size={14} />
+              Clear History
+            </Button>
+          )}
         </TabsContent>
 
         <TabsContent value="favorites" className="flex-1 px-3">
