@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useToast } from '@/hooks/use-toast';
 import { generateFinancialAnalysis } from '@/services/financialAnalysis';
@@ -23,7 +23,7 @@ export function useChat() {
     setIsLoading(true);
 
     try {
-      // This would be replaced with actual API calls in a production app
+      // Chamada para a API para obter análise
       const response = await generateFinancialAnalysis(message);
       
       const aiMessage: ChatMessage = {
@@ -56,9 +56,9 @@ export function useChat() {
     }
   };
 
-  const handleHistoryItemClick = (message: string) => {
+  const handleHistoryItemClick = useCallback((message: string) => {
     handleSendMessage(message);
-  };
+  }, []);
 
   return {
     messages,

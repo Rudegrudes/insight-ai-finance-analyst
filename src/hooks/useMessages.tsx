@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { useToast } from '@/hooks/use-toast';
 
 export interface ChatMessage {
@@ -17,7 +16,7 @@ export function useMessages() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  // Load messages from localStorage on initial render
+  // Carrega mensagens do localStorage na renderização inicial
   useEffect(() => {
     try {
       const savedChats = localStorage.getItem('insight-finance-chats');
@@ -25,7 +24,7 @@ export function useMessages() {
       
       if (savedChats) {
         const parsedChats = JSON.parse(savedChats);
-        // Convert string dates back to Date objects
+        // Converte datas de string para objetos Date
         setMessages(parsedChats.map((msg: any) => ({
           ...msg,
           timestamp: new Date(msg.timestamp)
@@ -34,10 +33,11 @@ export function useMessages() {
       
       if (savedFavorites) {
         const parsedFavorites = JSON.parse(savedFavorites);
-        // Convert string dates back to Date objects
+        // Converte datas de string para objetos Date
         setSavedMessages(parsedFavorites.map((msg: any) => ({
           ...msg,
-          timestamp: new Date(msg.timestamp)
+          timestamp: new Date(msg.timestamp),
+          isSaved: true
         })));
       }
     } catch (error) {
@@ -45,7 +45,7 @@ export function useMessages() {
     }
   }, []);
 
-  // Save messages to localStorage whenever they change
+  // Salva mensagens no localStorage sempre que mudarem
   useEffect(() => {
     try {
       localStorage.setItem('insight-finance-chats', JSON.stringify(messages));
@@ -54,7 +54,7 @@ export function useMessages() {
     }
   }, [messages]);
 
-  // Save favorites to localStorage whenever they change
+  // Salva favoritos no localStorage sempre que mudarem
   useEffect(() => {
     try {
       localStorage.setItem('insight-finance-favorites', JSON.stringify(savedMessages));
@@ -64,35 +64,35 @@ export function useMessages() {
   }, [savedMessages]);
 
   const handleSaveMessage = (messageId: string) => {
-    setMessages(prevMessages => 
-      prevMessages.map(msg => {
-        if (msg.id === messageId) {
-          // Toggle saved state
-          const newSavedState = !msg.isSaved;
-          
-          // Add or remove from saved messages
-          if (newSavedState) {
-            setSavedMessages(prev => [...prev, { ...msg, isSaved: true }]);
-            toast({
-              title: "Salva",
-              description: "Análise adicionada aos favoritos.",
-            });
-          } else {
-            setSavedMessages(prev => prev.filter(saved => saved.id !== messageId));
-            toast({
-              title: "Removida",
-              description: "Análise removida dos favoritos.",
-            });
-          }
-          
-          return { ...msg, isSaved: newSavedState };
+    const updatedMessages = messages.map(msg => {
+      if (msg.id === messageId) {
+        // Alterna estado salvo
+        const newSavedState = !msg.isSaved;
+        
+        // Adiciona ou remove dos favoritos
+        if (newSavedState) {
+          setSavedMessages(prev => [...prev, { ...msg, isSaved: true }]);
+          toast({
+            title: "Salva",
+            description: "Análise adicionada aos favoritos.",
+          });
+        } else {
+          setSavedMessages(prev => prev.filter(saved => saved.id !== messageId));
+          toast({
+            title: "Removida",
+            description: "Análise removida dos favoritos.",
+          });
         }
-        return msg;
-      })
-    );
+        
+        return { ...msg, isSaved: newSavedState };
+      }
+      return msg;
+    });
+    
+    setMessages(updatedMessages);
   };
 
-  // Add a function to clear messages
+  // Função para limpar mensagens
   const clearMessages = () => {
     setMessages([]);
     toast({
@@ -101,14 +101,8 @@ export function useMessages() {
     });
   };
 
-  // Apply any saved message states to the current messages
-  const messagesWithSavedState = messages.map(msg => {
-    const isSaved = savedMessages.some(saved => saved.id === msg.id);
-    return { ...msg, isSaved };
-  });
-
   return {
-    messages: messagesWithSavedState,
+    messages,
     savedMessages,
     isLoading,
     setIsLoading,

@@ -21,11 +21,20 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, isLoading, i
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey && !isLoading && inputValue.trim()) {
+      e.preventDefault();
+      onSendMessage(inputValue);
+      setInputValue('');
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="flex gap-2 mt-4">
       <Input
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={handleKeyDown}
         placeholder="Digite o símbolo da ação (ex: AAPL) ou par de moedas (ex: EUR/USD)..."
         className="insight-input flex-grow"
         disabled={isLoading}
