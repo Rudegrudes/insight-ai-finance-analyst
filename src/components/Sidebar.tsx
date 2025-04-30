@@ -55,9 +55,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
 
   return (
-    <div className="w-64 bg-white border-r border-insight-border flex flex-col h-full">
+    <div className="w-64 bg-sidebar border-r border-insight-border flex flex-col h-full">
       <div className="p-3 border-b border-insight-border flex justify-between items-center">
-        <h2 className="font-semibold text-lg">Insight Finance AI</h2>
+        <h2 className="font-semibold text-lg text-sidebar-foreground">Insight Finance AI</h2>
         {isMobile && (
           <Button variant="ghost" size="icon" onClick={onToggleSidebar} className="h-8 w-8">
             <XIcon size={18} />

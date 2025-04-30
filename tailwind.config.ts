@@ -67,9 +67,18 @@ export default {
 					DEFAULT: '#10a37f',
 					hover: '#0f8a6b',
 					foreground: '#ffffff',
-					background: '#f4f4f5',
-					text: '#1e1e1e',
-					border: '#e0e0e0',
+					background: {
+						DEFAULT: 'var(--background-color, #f4f4f5)',
+						dark: '#121212'
+					},
+					text: {
+						DEFAULT: 'var(--text-color, #1e1e1e)',
+						dark: '#e0e0e0'
+					},
+					border: {
+						DEFAULT: 'var(--border-color, #e0e0e0)',
+						dark: '#333333'
+					},
 				}
 			},
 			borderRadius: {

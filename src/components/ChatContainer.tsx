@@ -5,6 +5,7 @@ import ChatMessage from './ChatMessage';
 import MessageInput from './MessageInput';
 import { MenuIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from './ThemeToggle';
 
 export interface ChatMessage {
   id: string;
@@ -56,7 +57,8 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
             <MenuIcon size={18} />
           </Button>
         )}
-        <h1 className="text-xl font-semibold">Insight Finance AI</h1>
+        <h1 className="text-xl font-semibold flex-1">Insight Finance AI</h1>
+        <ThemeToggle />
       </header>
 
       <ScrollArea className="flex-1 p-4">
@@ -67,14 +69,14 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
               Faça perguntas sobre ações ou pares de moedas para análise fundamentalista detalhada
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-xl">
-              <div className="border border-insight-border rounded p-3 bg-white">
+              <div className="border border-insight-border rounded p-3 bg-card">
                 <h3 className="font-medium mb-1">Exemplos de Ações:</h3>
                 <ul className="text-sm text-muted-foreground">
                   <li>"Analisar ação AAPL"</li>
                   <li>"Análise fundamentalista de MSFT"</li>
                 </ul>
               </div>
-              <div className="border border-insight-border rounded p-3 bg-white">
+              <div className="border border-insight-border rounded p-3 bg-card">
                 <h3 className="font-medium mb-1">Exemplos de Forex:</h3>
                 <ul className="text-sm text-muted-foreground">
                   <li>"Análise de EUR/USD"</li>
