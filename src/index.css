@@ -77,8 +77,9 @@
     --input: 0 0% 17%; /* #2C2C2C */
     --ring: 195 100% 50%; /* #00BFFF (neon blue) */
     
-    --sidebar-background: 0 0% 5%; /* #0D0D0D - mais escuro que o principal */
-    --sidebar-foreground: 0 0% 90%; /* #E6E6E6 */
+    /* Ajuste para o sidebar ter contraste melhor com o texto no modo dark */
+    --sidebar-background: 0 0% 10%; /* #1A1A1A - um pouco mais escuro para melhorar contraste */
+    --sidebar-foreground: 0 0% 80%; /* #CCCCCC - um pouco mais escuro que branco puro */
     --sidebar-primary: 195 100% 50%; /* #00BFFF (neon blue) */
     --sidebar-primary-foreground: 0 0% 100%; /* #FFFFFF */
     --sidebar-accent: 0 0% 17%; /* #2C2C2C */
@@ -176,5 +177,10 @@
   
   .dark ::-webkit-scrollbar-thumb:hover {
     @apply bg-[#4F4F4F];
+  }
+  
+  /* Novo estilo para melhorar contraste do título na sidebar no modo dark */
+  .dark .sidebar-title {
+    @apply text-gray-400;
   }
 }
