@@ -73,12 +73,19 @@ export default {
 					},
 					text: {
 						DEFAULT: 'var(--text-color, #1e1e1e)',
-						dark: '#e0e0e0'
+						dark: '#FFFFFF'
 					},
 					border: {
 						DEFAULT: 'var(--border-color, #e0e0e0)',
-						dark: '#333333'
+						dark: '#2C2C2C'
 					},
+				},
+				neon: {
+					blue: '#00BFFF',
+					red: '#FF3B30',
+					green: '#34C759',
+					purple: '#A259FF',
+					yellow: '#FFD60A',
 				}
 			},
 			borderRadius: {
