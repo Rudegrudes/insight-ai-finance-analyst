@@ -48,17 +48,17 @@
   }
 
   .dark {
-    /* Nova paleta de cores para o tema escuro */
-    --background: 0 0% 7%;  /* #121212 */
+    /* Paleta de cores refinada para o tema escuro */
+    --background: 0 0% 11%;  /* #1C1C1C - mais elegante que preto puro */
     --foreground: 0 0% 100%; /* #FFFFFF */
 
-    --card: 0 0% 12%; /* #1E1E1E */
+    --card: 0 0% 15%; /* #262626 - para cards com maior contraste */
     --card-foreground: 0 0% 100%; /* #FFFFFF */
 
     --popover: 0 0% 12%; /* #1E1E1E */
     --popover-foreground: 0 0% 100%; /* #FFFFFF */
 
-    --primary: 195 100% 50%; /* #00BFFF (neon blue) */
+    --primary: 210 100% 61%; /* #3A8DFF - azul menos saturado, mais elegante */
     --primary-foreground: 0 0% 100%; /* #FFFFFF */
 
     --secondary: 0 0% 17%; /* #2C2C2C */
@@ -75,17 +75,17 @@
 
     --border: 0 0% 17%; /* #2C2C2C */
     --input: 0 0% 17%; /* #2C2C2C */
-    --ring: 195 100% 50%; /* #00BFFF (neon blue) */
+    --ring: 210 100% 61%; /* #3A8DFF - azul mais elegante */
     
     /* Ajuste para o sidebar ter contraste melhor com o texto no modo dark */
-    --sidebar-background: 0 0% 10%; /* #1A1A1A - um pouco mais escuro para melhorar contraste */
-    --sidebar-foreground: 0 0% 80%; /* #CCCCCC - um pouco mais escuro que branco puro */
-    --sidebar-primary: 195 100% 50%; /* #00BFFF (neon blue) */
+    --sidebar-background: 0 0% 9%; /* #181818 - escuro mas com contraste */
+    --sidebar-foreground: 0 0% 88%; /* #E0E0E0 - mais claro para legibilidade */
+    --sidebar-primary: 210 100% 61%; /* #3A8DFF - azul mais elegante */
     --sidebar-primary-foreground: 0 0% 100%; /* #FFFFFF */
     --sidebar-accent: 0 0% 17%; /* #2C2C2C */
     --sidebar-accent-foreground: 0 0% 100%; /* #FFFFFF */
     --sidebar-border: 0 0% 15%; /* #262626 */
-    --sidebar-ring: 195 100% 50%; /* #00BFFF (neon blue) */
+    --sidebar-ring: 210 100% 61%; /* #3A8DFF - azul mais elegante */
   }
 }
 
@@ -123,7 +123,7 @@
   }
 
   .dark .insight-button {
-    @apply bg-neon-blue text-white hover:bg-neon-blue/80;
+    @apply bg-primary text-white hover:bg-primary/80;
   }
 
   .insight-input {
@@ -131,11 +131,11 @@
   }
   
   .dark .insight-input {
-    @apply border-border bg-muted text-white focus:ring-neon-blue;
+    @apply border-border bg-muted text-white focus:ring-primary;
   }
   
   .chat-message {
-    @apply p-4 rounded-md my-2;
+    @apply p-6 rounded-md my-2;
   }
 
   .user-message {
@@ -151,7 +151,7 @@
   }
   
   .dark .ai-message {
-    @apply bg-[#1E1E1E] border-[#3C3C3C];
+    @apply bg-card border-accent;
   }
   
   /* Estilização personalizada da barra de rolagem */
@@ -179,8 +179,32 @@
     @apply bg-[#4F4F4F];
   }
   
-  /* Novo estilo para melhorar contraste do título na sidebar no modo dark */
+  /* Estilo aprimorado para o título na sidebar no modo dark */
   .dark .sidebar-title {
-    @apply text-gray-400;
+    @apply text-[#E0E0E0] font-bold text-lg;
+  }
+  
+  /* Estilo para itens do histórico na sidebar */
+  .history-item {
+    @apply p-2.5 hover:bg-sidebar-accent rounded cursor-pointer text-sm truncate transition-colors border-b border-sidebar-border/40;
+  }
+  
+  .dark .history-item {
+    @apply hover:bg-[#2A2A2A] border-[#2A2A2A];
+  }
+  
+  /* Estilo para os cards de conteúdo */
+  .content-card {
+    @apply bg-white dark:bg-[#1A1A1A] p-5 rounded-lg border border-border;
+  }
+  
+  /* Tipografia para títulos de seção */
+  .section-title {
+    @apply text-lg font-semibold mt-4 mb-2;
+  }
+  
+  /* Espaçamento para parágrafos */
+  .content-paragraph {
+    @apply my-2.5 leading-relaxed;
   }
 }

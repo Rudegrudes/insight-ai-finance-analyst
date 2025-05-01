@@ -48,7 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     <div 
       key={message.id}
       onClick={() => onHistoryItemClick(message.content)}
-      className="p-2 hover:bg-secondary rounded cursor-pointer text-sm truncate"
+      className="history-item"
     >
       {message.content}
     </div>
@@ -56,8 +56,8 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <div className="w-64 bg-sidebar border-r border-insight-border flex flex-col h-full">
-      <div className="p-3 border-b border-insight-border flex justify-between items-center">
-        <h2 className="font-semibold text-lg sidebar-title">Insight Finance AI</h2>
+      <div className="p-3 border-b border-sidebar-border flex justify-between items-center">
+        <h2 className="font-bold text-lg sidebar-title">Insight Finance AI</h2>
         {isMobile && (
           <Button variant="ghost" size="icon" onClick={onToggleSidebar} className="h-8 w-8">
             <XIcon size={18} />
@@ -83,7 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               Object.entries(groupedHistory).map(([date, messages]) => (
                 <div key={date} className="mb-4">
                   <h3 className="text-xs text-muted-foreground font-medium mb-1">{date}</h3>
-                  <div className="space-y-1">
+                  <div className="space-y-0.5">
                     {messages.map(renderHistoryItem)}
                   </div>
                 </div>
@@ -117,7 +117,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   .map(message => (
                     <div 
                       key={message.id}
-                      className="p-2 hover:bg-secondary rounded text-sm"
+                      className="p-3 hover:bg-sidebar-accent rounded text-sm border-b border-sidebar-border/40"
                     >
                       <div className="font-medium truncate">{
                         chatHistory.find(m => m.id === message.id.replace('-response', ''))?.content || 'Análise Salva'
@@ -138,7 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </TabsContent>
       </Tabs>
 
-      <div className="p-3 border-t border-insight-border">
+      <div className="p-4 border-t border-sidebar-border">
         <Button className="insight-button w-full" onClick={onAskQuestion}>
           Fazer Pergunta
         </Button>
