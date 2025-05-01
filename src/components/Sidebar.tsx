@@ -55,8 +55,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
 
   return (
-    <div className="w-64 bg-sidebar border-r border-insight-border flex flex-col h-full">
-      <div className="p-3 border-b border-sidebar-border flex justify-between items-center">
+    <div className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col h-full dark:bg-[#181818]">
+      <div className="p-3 border-b border-sidebar-border flex justify-between items-center dark:border-[#2A2A2A]">
         <h2 className="font-bold text-lg sidebar-title">Insight Finance AI</h2>
         {isMobile && (
           <Button variant="ghost" size="icon" onClick={onToggleSidebar} className="h-8 w-8">
@@ -66,12 +66,12 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       <Tabs defaultValue="history" className="flex-1 flex flex-col">
-        <TabsList className="grid grid-cols-2 mx-3 my-2">
-          <TabsTrigger value="history">
+        <TabsList className="grid grid-cols-2 mx-3 my-2 bg-accent dark:bg-[#2C2C2C]">
+          <TabsTrigger value="history" className="dark:data-[state=active]:bg-[#3A8DFF]">
             <HistoryIcon size={14} className="mr-2" />
             Histórico
           </TabsTrigger>
-          <TabsTrigger value="favorites">
+          <TabsTrigger value="favorites" className="dark:data-[state=active]:bg-[#3A8DFF]">
             <BookmarkIcon size={14} className="mr-2" />
             Favoritos
           </TabsTrigger>
@@ -100,7 +100,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               variant="outline" 
               size="sm" 
               onClick={onClearHistory} 
-              className="mt-2 mb-2 flex items-center gap-2 text-muted-foreground hover:text-destructive"
+              className="mt-2 mb-2 flex items-center gap-2 text-muted-foreground hover:text-destructive dark:border-[#2A2A2A]"
             >
               <Trash2Icon size={14} />
               Limpar Histórico
@@ -117,7 +117,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   .map(message => (
                     <div 
                       key={message.id}
-                      className="p-3 hover:bg-sidebar-accent rounded text-sm border-b border-sidebar-border/40"
+                      className="p-3 hover:bg-sidebar-accent rounded text-sm border-b border-sidebar-border/40 dark:hover:bg-[#2A2A2A] dark:border-[#2A2A2A]"
                     >
                       <div className="font-medium truncate">{
                         chatHistory.find(m => m.id === message.id.replace('-response', ''))?.content || 'Análise Salva'
@@ -138,7 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </TabsContent>
       </Tabs>
 
-      <div className="p-4 border-t border-sidebar-border">
+      <div className="p-4 border-t border-sidebar-border dark:border-[#2A2A2A]">
         <Button className="insight-button w-full" onClick={onAskQuestion}>
           Fazer Pergunta
         </Button>

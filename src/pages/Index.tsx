@@ -46,7 +46,7 @@ const Index = () => {
   };
 
   return (
-    <div className="h-screen flex overflow-hidden bg-insight-background">
+    <div className="h-screen flex overflow-hidden bg-insight-background dark:bg-[#181818]">
       {/* Sidebar - hidden on mobile when not active */}
       <div className={`
         ${isMobile 

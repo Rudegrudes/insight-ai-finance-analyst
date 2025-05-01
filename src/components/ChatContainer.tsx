@@ -45,8 +45,8 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
   }, [messages]);
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden">
-      <header className="border-b border-insight-border p-3 flex items-center">
+    <div className="flex-1 flex flex-col h-full overflow-hidden dark:bg-[#181818]">
+      <header className="border-b border-insight-border p-3 flex items-center dark:border-[#2A2A2A]">
         {isMobile && (
           <Button 
             variant="ghost" 
@@ -69,14 +69,14 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
               Faça perguntas sobre ações ou pares de moedas para análise fundamentalista detalhada
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-xl">
-              <div className="border border-insight-border rounded p-3 bg-card">
+              <div className="border border-insight-border rounded p-3 bg-card dark:bg-[#1A1A1A] dark:border-[#2A2A2A]">
                 <h3 className="font-medium mb-1">Exemplos de Ações:</h3>
                 <ul className="text-sm text-muted-foreground">
                   <li>"Analisar ação AAPL"</li>
                   <li>"Análise fundamentalista de MSFT"</li>
                 </ul>
               </div>
-              <div className="border border-insight-border rounded p-3 bg-card">
+              <div className="border border-insight-border rounded p-3 bg-card dark:bg-[#1A1A1A] dark:border-[#2A2A2A]">
                 <h3 className="font-medium mb-1">Exemplos de Forex:</h3>
                 <ul className="text-sm text-muted-foreground">
                   <li>"Análise de EUR/USD"</li>
@@ -102,7 +102,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
         )}
       </ScrollArea>
 
-      <div className="p-4 border-t border-insight-border">
+      <div className="p-4 border-t border-insight-border dark:border-[#2A2A2A]">
         <MessageInput onSendMessage={onSendMessage} isLoading={isLoading} inputRef={messageInputRef} />
         <div className="text-xs text-center text-muted-foreground mt-3">
           Desenvolvido com OpenAI + Finnhub API + FMP API
