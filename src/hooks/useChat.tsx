@@ -23,7 +23,7 @@ export function useChat() {
     setIsLoading(true);
 
     try {
-      // Chamada para a API para obter análise
+      // Call the refactored financial analysis service
       const response = await generateFinancialAnalysis(message);
       
       const aiMessage: ChatMessage = {
