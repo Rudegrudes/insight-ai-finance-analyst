@@ -2,6 +2,43 @@
 const FINNHUB_API_KEY = 'c7q3qv2ad3i9qv7qv7q0';
 const FMP_API_KEY = 'UQD9TY699rUEYTpDNzKqq4EZD0FQ4LIj';
 
+// Mapa de nomes comuns para símbolos de ações brasileiras
+const companyNameToSymbol = {
+  'banco do brasil': 'BBAS3',
+  'bradesco': 'BBDC4',
+  'itau': 'ITUB4',
+  'itaú': 'ITUB4',
+  'vale': 'VALE3',
+  'petrobras': 'PETR4',
+  'ambev': 'ABEV3',
+  'b3': 'B3SA3',
+  'magazine luiza': 'MGLU3',
+  'magalu': 'MGLU3',
+  'itausa': 'ITSA4',
+  'santander': 'SANB11',
+  'weg': 'WEGE3'
+};
+
+// Mapa de símbolos de pares de moedas com variações de formato
+const forexPairs = {
+  'eurusd': 'EUR/USD',
+  'eur/usd': 'EUR/USD',
+  'eur-usd': 'EUR/USD',
+  'eur usd': 'EUR/USD',
+  'usdjpy': 'USD/JPY',
+  'usd/jpy': 'USD/JPY',
+  'usd-jpy': 'USD/JPY',
+  'usd jpy': 'USD/JPY',
+  'gbpusd': 'GBP/USD',
+  'gbp/usd': 'GBP/USD',
+  'gbp-usd': 'GBP/USD',
+  'gbp usd': 'GBP/USD',
+  'usdcad': 'USD/CAD',
+  'usd/cad': 'USD/CAD',
+  'usd-cad': 'USD/CAD',
+  'usd cad': 'USD/CAD'
+};
+
 async function fetchStockData(symbol: string) {
   try {
     console.log(`Buscando dados da ação ${symbol} na FMP`);
@@ -85,44 +122,89 @@ function getDateToday() {
   return new Date().toISOString().split('T')[0];
 }
 
+// Nova função para identificar o tipo de ativo e extrair o símbolo correto
+function identifyAsset(query: string): { symbol: string, type: 'stock' | 'forex' | null } {
+  // Normalizar a consulta removendo acentos, convertendo para minúsculo
+  const normalizedQuery = query.toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  
+  console.log(`Consulta normalizada: "${normalizedQuery}"`);
+  
+  // Verificar se corresponde a um nome de empresa conhecido
+  for (const [company, symbol] of Object.entries(companyNameToSymbol)) {
+    if (normalizedQuery.includes(company)) {
+      console.log(`Empresa encontrada: ${company} -> ${symbol}`);
+      return { symbol, type: 'stock' };
+    }
+  }
+  
+  // Verificar se corresponde a um par de forex conhecido
+  for (const [pair, formattedPair] of Object.entries(forexPairs)) {
+    if (normalizedQuery.includes(pair)) {
+      console.log(`Par forex encontrado: ${pair} -> ${formattedPair}`);
+      return { symbol: formattedPair, type: 'forex' };
+    }
+  }
+  
+  // Verificar padrões de símbolo de ação (letras maiúsculas seguidas de números opcionais)
+  const stockPattern = /\b([A-Za-z]{2,5}\d{0,2})\b/;
+  const stockMatch = query.match(stockPattern);
+  if (stockMatch) {
+    console.log(`Padrão de ação encontrado: ${stockMatch[1]}`);
+    return { symbol: stockMatch[1].toUpperCase(), type: 'stock' };
+  }
+  
+  // Verificar padrão de par de moedas (3 letras / 3 letras)
+  const forexPattern = /\b([A-Za-z]{3})[\/\s-]?([A-Za-z]{3})\b/i;
+  const forexMatch = query.match(forexPattern);
+  if (forexMatch) {
+    const formattedPair = `${forexMatch[1].toUpperCase()}/${forexMatch[2].toUpperCase()}`;
+    console.log(`Padrão de forex encontrado: ${formattedPair}`);
+    return { symbol: formattedPair, type: 'forex' };
+  }
+  
+  return { symbol: '', type: null };
+}
+
 export const generateFinancialAnalysis = async (query: string): Promise<string> => {
   try {
-    // Melhorando a regex para capturar símbolos com ou sem /
-    const assetMatch = query.match(/\b([A-Z]{1,5}(?:\/[A-Z]{3})?)\b/i);
-
-    if (!assetMatch) {
-      return "Não pude identificar um código válido de ação ou par de moedas na sua consulta. Por favor, especifique uma ação (ex: AAPL) ou um par de moedas (ex: EUR/USD).";
+    console.log(`Analisando consulta: "${query}"`);
+    
+    // Identificar o tipo de ativo e símbolo
+    const { symbol, type } = identifyAsset(query);
+    
+    if (!symbol || !type) {
+      return "Não pude identificar um código válido de ação ou par de moedas na sua consulta. Por favor, especifique uma ação (ex: AAPL, BBAS3) ou um par de moedas (ex: EUR/USD).";
     }
-
-    const asset = assetMatch[1].toUpperCase();
-    console.log(`Analisando ativo: ${asset}`);
-
-    if (asset.includes('/')) {
-      // Par de moedas
+    
+    console.log(`Ativo identificado: ${symbol}, tipo: ${type}`);
+    
+    if (type === 'forex') {
+      // Processar par de moedas
       try {
-        const [baseCurrency, quoteCurrency] = asset.split('/');
+        const [baseCurrency, quoteCurrency] = symbol.split('/');
         console.log(`Processando par forex: ${baseCurrency}/${quoteCurrency}`);
         
         const forexData = await fetchForexRates(baseCurrency);
         
         if (!forexData.quote || !forexData.quote[quoteCurrency]) {
-          return `Não foi possível obter a taxa de câmbio para o par ${asset}.`;
+          return `Não foi possível obter a taxa de câmbio para o par ${symbol}.`;
         }
         
         const rate = forexData.quote[quoteCurrency];
         
-        return `${asset} - Análise de Forex em Tempo Real:\n\nTaxa de câmbio atual: 1 ${baseCurrency} = ${rate} ${quoteCurrency}\n\nObservação: Dados fornecidos pela Finnhub.`;
+        return `${symbol} - Análise de Forex em Tempo Real:\n\nTaxa de câmbio atual: 1 ${baseCurrency} = ${rate} ${quoteCurrency}\n\nObservação: Dados fornecidos pela Finnhub.`;
       } catch (error) {
-        console.error(`Erro ao processar par forex ${asset}:`, error);
-        return `Ocorreu um erro ao buscar dados para o par ${asset}. Por favor, verifique se o par de moedas é válido e tente novamente.`;
+        console.error(`Erro ao processar par forex ${symbol}:`, error);
+        return `Ocorreu um erro ao buscar dados para o par ${symbol}. Por favor, verifique se o par de moedas é válido e tente novamente.`;
       }
     } else {
-      // Ação
+      // Processar ação
       try {
-        console.log(`Processando ação: ${asset}`);
-        const profile = await fetchStockData(asset);
-        const quote = await fetchStockQuote(asset);
-        const news = await fetchNews(asset);
+        console.log(`Processando ação: ${symbol}`);
+        const profile = await fetchStockData(symbol);
+        const quote = await fetchStockQuote(symbol);
+        const news = await fetchNews(symbol);
         
         let newsText = 'Nenhuma notícia recente disponível.';
         if (news && news.length > 0) {
@@ -132,10 +214,10 @@ export const generateFinancialAnalysis = async (query: string): Promise<string> 
           }).join('\n');
         }
 
-        return `${asset} - Análise Fundamental em Tempo Real:\n\nVisão Geral da Empresa:\n${profile.companyName} é uma empresa do setor ${profile.sector || 'não informado'}, com sede em ${profile.country || 'não informado'}.\n\nMétricas Financeiras Chave:\n• Valor de Mercado: $${(profile.mktCap / 1e9).toFixed(2)} bilhões\n• Índice P/L: ${profile.pe || 'N/A'}\n• Dividend Yield: ${profile.dividendYield || 'N/A'}\n• Setor: ${profile.sector || 'N/A'}\n\nDesempenho Recente:\n• Preço Atual: $${quote.price}\n• Variação do Dia: ${quote.change} (${quote.changesPercentage}%)\n\nNotícias Recentes:\n${newsText}\n\nResumo:\nCom base nos dados atuais, ${profile.companyName} apresenta um desempenho financeiro que deve ser monitorado de perto, considerando as notícias recentes e indicadores financeiros.`;
+        return `${symbol} - Análise Fundamental em Tempo Real:\n\nVisão Geral da Empresa:\n${profile.companyName} é uma empresa do setor ${profile.sector || 'não informado'}, com sede em ${profile.country || 'não informado'}.\n\nMétricas Financeiras Chave:\n• Valor de Mercado: $${(profile.mktCap / 1e9).toFixed(2)} bilhões\n• Índice P/L: ${profile.pe || 'N/A'}\n• Dividend Yield: ${profile.dividendYield || 'N/A'}\n• Setor: ${profile.sector || 'N/A'}\n\nDesempenho Recente:\n• Preço Atual: $${quote.price}\n• Variação do Dia: ${quote.change} (${quote.changesPercentage}%)\n\nNotícias Recentes:\n${newsText}\n\nResumo:\nCom base nos dados atuais, ${profile.companyName} apresenta um desempenho financeiro que deve ser monitorado de perto, considerando as notícias recentes e indicadores financeiros.`;
       } catch (error) {
-        console.error(`Erro ao processar ação ${asset}:`, error);
-        return `Ocorreu um erro ao buscar dados para a ação ${asset}. Por favor, verifique se o código da ação é válido e tente novamente.`;
+        console.error(`Erro ao processar ação ${symbol}:`, error);
+        return `Ocorreu um erro ao buscar dados para a ação ${symbol}. Por favor, verifique se o código da ação é válido e tente novamente.`;
       }
     }
   } catch (error) {
