@@ -1,28 +1,78 @@
-const FINNHUB_API_KEY = 'd09tc7hr01qus8rfaki0d09tc7hr01qus8rfakig';
+
+const FINNHUB_API_KEY = 'c7q3qv2ad3i9qv7qv7q0';
 const FMP_API_KEY = 'UQD9TY699rUEYTpDNzKqq4EZD0FQ4LIj';
 
 async function fetchStockData(symbol: string) {
-  const url = `https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=${FMP_API_KEY}`;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('Erro ao buscar dados da ação na FMP');
-  const data = await response.json();
-  return data[0]; // perfil da empresa
+  try {
+    console.log(`Buscando dados da ação ${symbol} na FMP`);
+    const url = `https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=${FMP_API_KEY}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Erro ao buscar dados da ação na FMP');
+    const data = await response.json();
+    
+    if (data.length === 0) {
+      throw new Error(`Nenhum dado encontrado para o símbolo ${symbol}`);
+    }
+    
+    return data[0]; // perfil da empresa
+  } catch (error) {
+    console.error(`Erro ao buscar dados da ação ${symbol}:`, error);
+    throw error;
+  }
 }
 
 async function fetchStockQuote(symbol: string) {
-  const url = `https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=${FMP_API_KEY}`;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('Erro ao buscar cotação da ação na FMP');
-  const data = await response.json();
-  return data[0];
+  try {
+    console.log(`Buscando cotação da ação ${symbol} na FMP`);
+    const url = `https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=${FMP_API_KEY}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Erro ao buscar cotação da ação na FMP');
+    const data = await response.json();
+    
+    if (data.length === 0) {
+      throw new Error(`Nenhuma cotação encontrada para o símbolo ${symbol}`);
+    }
+    
+    return data[0];
+  } catch (error) {
+    console.error(`Erro ao buscar cotação da ação ${symbol}:`, error);
+    throw error;
+  }
 }
 
 async function fetchNews(symbol: string) {
-  const url = `https://finnhub.io/api/v1/company-news?symbol=${symbol}&from=${getDateNDaysAgo(30)}&to=${getDateToday()}&token=${FINNHUB_API_KEY}`;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('Erro ao buscar notícias na Finnhub');
-  const data = await response.json();
-  return data.slice(0, 5); // pegar as 5 notícias mais recentes
+  try {
+    console.log(`Buscando notícias para ${symbol} na Finnhub`);
+    const url = `https://finnhub.io/api/v1/company-news?symbol=${symbol}&from=${getDateNDaysAgo(30)}&to=${getDateToday()}&token=${FINNHUB_API_KEY}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Erro ao buscar notícias na Finnhub');
+    const data = await response.json();
+    console.log(`Notícias recebidas: ${data.length}`);
+    return data.slice(0, 5); // pegar as 5 notícias mais recentes
+  } catch (error) {
+    console.error(`Erro ao buscar notícias para ${symbol}:`, error);
+    return []; // retornar array vazio em caso de erro para não quebrar o fluxo
+  }
+}
+
+async function fetchForexRates(baseCurrency: string) {
+  try {
+    console.log(`Buscando taxas forex para ${baseCurrency} na Finnhub`);
+    const url = `https://finnhub.io/api/v1/forex/rates?base=${baseCurrency}&token=${FINNHUB_API_KEY}`;
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      console.error(`Resposta da API Finnhub: ${response.status} ${response.statusText}`);
+      throw new Error('Erro ao buscar dados de Forex na Finnhub');
+    }
+    
+    const data = await response.json();
+    console.log(`Dados forex recebidos:`, data);
+    return data;
+  } catch (error) {
+    console.error(`Erro ao buscar taxas forex para ${baseCurrency}:`, error);
+    throw error;
+  }
 }
 
 function getDateNDaysAgo(n: number) {
@@ -37,6 +87,7 @@ function getDateToday() {
 
 export const generateFinancialAnalysis = async (query: string): Promise<string> => {
   try {
+    // Melhorando a regex para capturar símbolos com ou sem /
     const assetMatch = query.match(/\b([A-Z]{1,5}(?:\/[A-Z]{3})?)\b/i);
 
     if (!assetMatch) {
@@ -44,38 +95,48 @@ export const generateFinancialAnalysis = async (query: string): Promise<string> 
     }
 
     const asset = assetMatch[1].toUpperCase();
+    console.log(`Analisando ativo: ${asset}`);
 
     if (asset.includes('/')) {
-      // Par de moedas - manter análise simplificada
-      const [baseCurrency, quoteCurrency] = asset.split('/');
-
-      const finnhubUrl = `https://finnhub.io/api/v1/forex/rates?base=${baseCurrency}&token=${FINNHUB_API_KEY}`;
-      const response = await fetch(finnhubUrl);
-      if (!response.ok) {
-        throw new Error('Erro ao buscar dados de Forex na Finnhub');
+      // Par de moedas
+      try {
+        const [baseCurrency, quoteCurrency] = asset.split('/');
+        console.log(`Processando par forex: ${baseCurrency}/${quoteCurrency}`);
+        
+        const forexData = await fetchForexRates(baseCurrency);
+        
+        if (!forexData.quote || !forexData.quote[quoteCurrency]) {
+          return `Não foi possível obter a taxa de câmbio para o par ${asset}.`;
+        }
+        
+        const rate = forexData.quote[quoteCurrency];
+        
+        return `${asset} - Análise de Forex em Tempo Real:\n\nTaxa de câmbio atual: 1 ${baseCurrency} = ${rate} ${quoteCurrency}\n\nObservação: Dados fornecidos pela Finnhub.`;
+      } catch (error) {
+        console.error(`Erro ao processar par forex ${asset}:`, error);
+        return `Ocorreu um erro ao buscar dados para o par ${asset}. Por favor, verifique se o par de moedas é válido e tente novamente.`;
       }
-      const data = await response.json();
-
-      const rate = data.quote ? data.quote[quoteCurrency] : null;
-      if (!rate) {
-        return `Não foi possível obter a taxa de câmbio para o par ${asset}.`;
-      }
-
-      return `${asset} - Análise de Forex em Tempo Real:\n\nTaxa de câmbio atual: 1 ${baseCurrency} = ${rate} ${quoteCurrency}\n\nObservação: Dados fornecidos pela Finnhub.`;
     } else {
-      // Ação - buscar dados e notícias reais
-      const profile = await fetchStockData(asset);
-      const quote = await fetchStockQuote(asset);
-      const news = await fetchNews(asset);
+      // Ação
+      try {
+        console.log(`Processando ação: ${asset}`);
+        const profile = await fetchStockData(asset);
+        const quote = await fetchStockQuote(asset);
+        const news = await fetchNews(asset);
+        
+        let newsText = 'Nenhuma notícia recente disponível.';
+        if (news && news.length > 0) {
+          newsText = news.map((n: any) => {
+            const date = n.datetime ? new Date(n.datetime * 1000).toLocaleDateString() : 'Data não disponível';
+            return `• ${n.headline || 'Sem título'} (${date})`;
+          }).join('\n');
+        }
 
-      if (!profile || !quote) {
-        return `Não foi possível obter dados para a ação ${asset}.`;
+        return `${asset} - Análise Fundamental em Tempo Real:\n\nVisão Geral da Empresa:\n${profile.companyName} é uma empresa do setor ${profile.sector || 'não informado'}, com sede em ${profile.country || 'não informado'}.\n\nMétricas Financeiras Chave:\n• Valor de Mercado: $${(profile.mktCap / 1e9).toFixed(2)} bilhões\n• Índice P/L: ${profile.pe || 'N/A'}\n• Dividend Yield: ${profile.dividendYield || 'N/A'}\n• Setor: ${profile.sector || 'N/A'}\n\nDesempenho Recente:\n• Preço Atual: $${quote.price}\n• Variação do Dia: ${quote.change} (${quote.changesPercentage}%)\n\nNotícias Recentes:\n${newsText}\n\nResumo:\nCom base nos dados atuais, ${profile.companyName} apresenta um desempenho financeiro que deve ser monitorado de perto, considerando as notícias recentes e indicadores financeiros.`;
+      } catch (error) {
+        console.error(`Erro ao processar ação ${asset}:`, error);
+        return `Ocorreu um erro ao buscar dados para a ação ${asset}. Por favor, verifique se o código da ação é válido e tente novamente.`;
       }
-
-      // Montar texto no formato narrativo parecido com o modelo antigo
-      let newsText = news.length > 0 ? news.map(n => `• ${n.headline} (${new Date(n.datetime * 1000).toLocaleDateString()})`).join('\n') : 'Nenhuma notícia recente disponível.';
-
-      return `${asset} - Análise Fundamental em Tempo Real:\n\nVisão Geral da Empresa:\n${profile.companyName} é uma empresa do setor ${profile.sector}, com sede em ${profile.country}.\n\nMétricas Financeiras Chave:\n• Valor de Mercado: $${(profile.mktCap / 1e9).toFixed(2)} bilhões\n• Índice P/L: ${profile.pe}\n• Dividend Yield: ${profile.dividendYield || 'N/A'}\n• Setor: ${profile.sector}\n\nDesempenho Recente:\n• Preço Atual: $${quote.price}\n• Variação do Dia: ${quote.change} (${quote.changesPercentage}%)\n\nNotícias Recentes:\n${newsText}\n\nResumo:\nCom base nos dados atuais, ${profile.companyName} apresenta um desempenho financeiro que deve ser monitorado de perto, considerando as notícias recentes e indicadores financeiros.`;
     }
   } catch (error) {
     console.error('Erro ao gerar análise financeira:', error);
