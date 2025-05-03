@@ -1,7 +1,9 @@
 
 // Asset identification logic
-import { companyNameToSymbol, popularUSStocks, forexPairs } from './constants';
-import type { AssetIdentification } from './types';
+import { companyNameToSymbol, popularUSStocks, forexPairs, ERROR_CODES } from './constants';
+import { isValidStockSymbol } from './stockService';
+import { isValidForexPair } from './forexService';
+import type { AssetIdentification, ErrorData } from './types';
 
 /**
  * Identifies the type of asset from the query and returns the appropriate symbol
@@ -62,4 +64,32 @@ export function identifyAsset(query: string): AssetIdentification {
   }
   
   return { symbol: '', type: null };
+}
+
+/**
+ * Validates the identified asset
+ */
+export function validateAsset(asset: AssetIdentification): ErrorData | null {
+  if (!asset.symbol || !asset.type) {
+    return {
+      code: ERROR_CODES.ASSET_NOT_FOUND,
+      message: "Não foi possível identificar um ativo válido na sua consulta."
+    };
+  }
+  
+  if (asset.type === 'stock' && !isValidStockSymbol(asset.symbol.replace('.SA', ''))) {
+    return {
+      code: ERROR_CODES.INVALID_SYMBOL,
+      message: `O símbolo da ação '${asset.symbol}' parece inválido.`
+    };
+  }
+  
+  if (asset.type === 'forex' && !isValidForexPair(asset.symbol)) {
+    return {
+      code: ERROR_CODES.INVALID_SYMBOL,
+      message: `O par forex '${asset.symbol}' parece inválido.`
+    };
+  }
+  
+  return null;
 }

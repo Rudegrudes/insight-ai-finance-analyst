@@ -1,7 +1,7 @@
 
 // Forex data fetching and processing
-import { FINNHUB_API_KEY, simulatedForexRates } from './constants';
-import type { ForexData } from './types';
+import { FINNHUB_API_KEY, simulatedForexRates, ERROR_CODES } from './constants';
+import type { ForexData, FinnhubForexResponse, ErrorData } from './types';
 
 /**
  * Fetches forex exchange rates
@@ -15,39 +15,87 @@ export async function fetchForexRates(baseCurrency: string, quoteCurrency: strin
     const response = await fetch(url);
     
     if (response.ok) {
-      const data = await response.json();
+      const data = await response.json() as FinnhubForexResponse;
       if (data.quote && data.quote[quoteCurrency]) {
         console.log(`Taxa forex recebida: ${data.quote[quoteCurrency]}`);
-        return { rate: data.quote[quoteCurrency] };
+        return { 
+          rate: data.quote[quoteCurrency],
+          timestamp: Date.now()
+        };
       }
+      
+      console.warn(`API Finnhub não retornou a taxa para ${quoteCurrency}`);
+      throw createError(
+        ERROR_CODES.DATA_PARSING_ERROR,
+        `Dados da taxa ${baseCurrency}/${quoteCurrency} não disponíveis`,
+        'Finnhub API'
+      );
     } else {
-      console.error(`Resposta da API Finnhub: ${response.status} ${response.statusText}`);
+      const errorText = `Resposta da API Finnhub: ${response.status} ${response.statusText}`;
+      console.error(errorText);
+      throw createError(
+        ERROR_CODES.API_UNAVAILABLE,
+        errorText,
+        'Finnhub API'
+      );
     }
-    
-    // If the API fails, use simulated data
-    console.log(`Usando taxas forex simuladas para ${baseCurrency}/${quoteCurrency}`);
-    const pair = `${baseCurrency}/${quoteCurrency}`;
-    
-    if (simulatedForexRates[pair]) {
-      return { rate: simulatedForexRates[pair], simulated: true };
-    }
-    
-    // If the reverse pair exists in the simulated data, calculate the inverse
-    const reversePair = `${quoteCurrency}/${baseCurrency}`;
-    if (simulatedForexRates[reversePair]) {
-      return { rate: 1 / simulatedForexRates[reversePair], simulated: true };
-    }
-    
-    // If still not found, return a plausible random value
-    return { 
-      rate: Math.random() * 2 + 0.5, 
-      simulated: true
-    };
   } catch (error) {
     console.error(`Erro ao buscar taxas forex para ${baseCurrency}/${quoteCurrency}:`, error);
+    return handleForexError(baseCurrency, quoteCurrency, error);
+  }
+}
+
+/**
+ * Handles errors and falls back to simulated data
+ */
+function handleForexError(baseCurrency: string, quoteCurrency: string, error: unknown): ForexData {
+  console.log(`Usando taxas forex simuladas para ${baseCurrency}/${quoteCurrency}`);
+  const pair = `${baseCurrency}/${quoteCurrency}`;
+  
+  // Try to find the exact pair in simulated data
+  if (simulatedForexRates[pair]) {
     return { 
-      rate: Math.random() * 2 + 0.5, 
-      simulated: true
+      rate: simulatedForexRates[pair], 
+      simulated: true,
+      timestamp: Date.now()
     };
   }
+  
+  // Try to find the reverse pair in simulated data
+  const reversePair = `${quoteCurrency}/${baseCurrency}`;
+  if (simulatedForexRates[reversePair]) {
+    return { 
+      rate: 1 / simulatedForexRates[reversePair], 
+      simulated: true,
+      timestamp: Date.now()
+    };
+  }
+  
+  // Generate plausible random rate if pair not found
+  console.warn(`Par forex ${pair} não encontrado em dados simulados. Gerando taxa aleatória.`);
+  return { 
+    rate: Math.random() * 2 + 0.5, 
+    simulated: true,
+    timestamp: Date.now()
+  };
+}
+
+/**
+ * Creates a standardized error object
+ */
+function createError(code: string, message: string, source?: string): ErrorData {
+  return {
+    code,
+    message,
+    source
+  };
+}
+
+/**
+ * Checks if a string is a valid forex pair
+ */
+export function isValidForexPair(pair: string): boolean {
+  // Check if it follows the standard 3-letter/3-letter format
+  const regex = /^[A-Za-z]{3}\/[A-Za-z]{3}$/;
+  return regex.test(pair);
 }

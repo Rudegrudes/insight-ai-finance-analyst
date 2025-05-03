@@ -1,4 +1,3 @@
-
 // API keys and constant mapping values
 
 export const FINNHUB_API_KEY = 'c7q3qv2ad3i9qv7qv7q0';
@@ -55,10 +54,37 @@ export const popularUSStocks = {
 
 // Map of forex pairs with variations
 export const forexPairs = {
+  // Euro pairs
   'eurusd': 'EUR/USD',
   'eur/usd': 'EUR/USD',
   'eur-usd': 'EUR/USD',
   'eur usd': 'EUR/USD',
+  'eurgbp': 'EUR/GBP',
+  'eur/gbp': 'EUR/GBP',
+  'eur-gbp': 'EUR/GBP',
+  'eur gbp': 'EUR/GBP',
+  'eurjpy': 'EUR/JPY',
+  'eur/jpy': 'EUR/JPY',
+  'eur-jpy': 'EUR/JPY',
+  'eur jpy': 'EUR/JPY',
+  'eurchf': 'EUR/CHF',
+  'eur/chf': 'EUR/CHF',
+  'eur-chf': 'EUR/CHF',
+  'eur chf': 'EUR/CHF',
+  'euraud': 'EUR/AUD',
+  'eur/aud': 'EUR/AUD',
+  'eur-aud': 'EUR/AUD',
+  'eur aud': 'EUR/AUD',
+  'eurcad': 'EUR/CAD',
+  'eur/cad': 'EUR/CAD',
+  'eur-cad': 'EUR/CAD',
+  'eur cad': 'EUR/CAD',
+  'eurbrl': 'EUR/BRL',
+  'eur/brl': 'EUR/BRL',
+  'eur-brl': 'EUR/BRL',
+  'eur brl': 'EUR/BRL',
+  
+  // USD pairs
   'usdjpy': 'USD/JPY',
   'usd/jpy': 'USD/JPY',
   'usd-jpy': 'USD/JPY',
@@ -79,19 +105,89 @@ export const forexPairs = {
   'usd/brl': 'USD/BRL',
   'usd-brl': 'USD/BRL',
   'usd brl': 'USD/BRL',
-  'eurbrl': 'EUR/BRL',
-  'eur/brl': 'EUR/BRL',
-  'eur-brl': 'EUR/BRL',
-  'eur brl': 'EUR/BRL',
+  'usdchf': 'USD/CHF',
+  'usd/chf': 'USD/CHF',
+  'usd-chf': 'USD/CHF',
+  'usd chf': 'USD/CHF',
+  'usdmxn': 'USD/MXN',
+  'usd/mxn': 'USD/MXN',
+  'usd-mxn': 'USD/MXN',
+  'usd mxn': 'USD/MXN',
+  'usdcny': 'USD/CNY',
+  'usd/cny': 'USD/CNY',
+  'usd-cny': 'USD/CNY',
+  'usd cny': 'USD/CNY',
+  'usdrub': 'USD/RUB',
+  'usd/rub': 'USD/RUB',
+  'usd-rub': 'USD/RUB',
+  'usd rub': 'USD/RUB',
+  'usdinr': 'USD/INR',
+  'usd/inr': 'USD/INR',
+  'usd-inr': 'USD/INR',
+  'usd inr': 'USD/INR',
+  
+  // GBP pairs
+  'gbpjpy': 'GBP/JPY',
+  'gbp/jpy': 'GBP/JPY',
+  'gbp-jpy': 'GBP/JPY',
+  'gbp jpy': 'GBP/JPY',
+  'gbpaud': 'GBP/AUD',
+  'gbp/aud': 'GBP/AUD',
+  'gbp-aud': 'GBP/AUD',
+  'gbp aud': 'GBP/AUD',
+  'gbpcad': 'GBP/CAD',
+  'gbp/cad': 'GBP/CAD',
+  'gbp-cad': 'GBP/CAD',
+  'gbp cad': 'GBP/CAD',
+  
+  // Other major pairs
+  'audjpy': 'AUD/JPY',
+  'aud/jpy': 'AUD/JPY',
+  'aud-jpy': 'AUD/JPY',
+  'aud jpy': 'AUD/JPY',
+  'cadjpy': 'CAD/JPY',
+  'cad/jpy': 'CAD/JPY',
+  'cad-jpy': 'CAD/JPY',
+  'cad jpy': 'CAD/JPY',
+  'nzdusd': 'NZD/USD',
+  'nzd/usd': 'NZD/USD',
+  'nzd-usd': 'NZD/USD',
+  'nzd usd': 'NZD/USD',
 };
 
 // Simulated forex rates for when API fails
 export const simulatedForexRates = {
   'EUR/USD': 1.0862,
+  'EUR/GBP': 0.8643,
+  'EUR/JPY': 164.7012,
+  'EUR/CHF': 0.9845,
+  'EUR/AUD': 1.6428,
+  'EUR/CAD': 1.4799,
+  'EUR/BRL': 5.5663,
   'USD/JPY': 151.62,
-  'GBP/USD': 1.2568,
+  'USD/CHF': 0.9058,
   'USD/CAD': 1.3624,
-  'AUD/USD': 0.6609,
+  'USD/MXN': 16.7245,
+  'USD/CNY': 7.2416,
+  'USD/RUB': 89.0354,
+  'USD/INR': 83.3448,
   'USD/BRL': 5.1246,
-  'EUR/BRL': 5.5663
+  'GBP/USD': 1.2568,
+  'GBP/JPY': 190.5346,
+  'GBP/AUD': 1.9011,
+  'GBP/CAD': 1.7123,
+  'AUD/USD': 0.6609,
+  'AUD/JPY': 100.2175,
+  'CAD/JPY': 111.2894,
+  'NZD/USD': 0.6047
+};
+
+// Error codes for standardized error handling
+export const ERROR_CODES = {
+  ASSET_NOT_FOUND: 'ASSET_NOT_FOUND',
+  API_UNAVAILABLE: 'API_UNAVAILABLE',
+  INVALID_SYMBOL: 'INVALID_SYMBOL',
+  NETWORK_ERROR: 'NETWORK_ERROR',
+  DATA_PARSING_ERROR: 'DATA_PARSING_ERROR',
+  UNKNOWN_ERROR: 'UNKNOWN_ERROR'
 };

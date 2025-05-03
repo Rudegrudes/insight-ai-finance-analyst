@@ -1,8 +1,10 @@
 
 // Main financial analysis generator
-import { identifyAsset } from './assetIdentifier';
+import { identifyAsset, validateAsset } from './assetIdentifier';
 import { fetchStockData, fetchStockQuote, fetchNews } from './stockService';
 import { fetchForexRates } from './forexService';
+import { ERROR_CODES } from './constants';
+import type { AnalysisResult, ErrorData } from './types';
 
 /**
  * Generates a financial analysis based on the user's query
@@ -12,12 +14,15 @@ export async function generateFinancialAnalysis(query: string): Promise<string> 
     console.log(`Analisando consulta: "${query}"`);
     
     // Identify the type of asset and symbol
-    const { symbol, type } = identifyAsset(query);
+    const asset = identifyAsset(query);
     
-    if (!symbol || !type) {
-      return "Não pude identificar um código válido de ação ou par de moedas na sua consulta. Por favor, especifique uma ação (ex: AAPL, BBAS3) ou um par de moedas (ex: EUR/USD).";
+    // Validate the identified asset
+    const validationError = validateAsset(asset);
+    if (validationError) {
+      return createErrorAnalysis(validationError);
     }
     
+    const { symbol, type } = asset;
     console.log(`Ativo identificado: ${symbol}, tipo: ${type}`);
     
     if (type === 'forex') {
@@ -27,7 +32,45 @@ export async function generateFinancialAnalysis(query: string): Promise<string> 
     }
   } catch (error) {
     console.error('Erro ao gerar análise financeira:', error);
-    return "Desculpe, ocorreu um erro ao gerar a análise financeira. Por favor, tente novamente mais tarde.";
+    
+    const errorData: ErrorData = {
+      code: ERROR_CODES.UNKNOWN_ERROR,
+      message: "Ocorreu um erro inesperado ao gerar a análise financeira."
+    };
+    
+    if (error && typeof error === 'object' && 'code' in error) {
+      errorData.code = String(error.code);
+      
+      if ('message' in error) {
+        errorData.message = String(error.message);
+      }
+    }
+    
+    return createErrorAnalysis(errorData);
+  }
+}
+
+/**
+ * Creates an error message for display
+ */
+function createErrorAnalysis(error: ErrorData): string {
+  const baseMessage = "Desculpe, não consegui completar a análise financeira.";
+  
+  switch (error.code) {
+    case ERROR_CODES.ASSET_NOT_FOUND:
+      return `${baseMessage}\n\nNão identifiquei um ativo financeiro válido na sua consulta. Por favor, especifique uma ação (ex: AAPL, PETR4, Vale) ou um par de moedas (ex: EUR/USD, dólar).`;
+    
+    case ERROR_CODES.API_UNAVAILABLE:
+      return `${baseMessage}\n\nEstamos com limitações temporárias de acesso aos dados financeiros. Por favor, tente novamente mais tarde.\n\nDetalhe técnico: ${error.message}`;
+    
+    case ERROR_CODES.INVALID_SYMBOL:
+      return `${baseMessage}\n\n${error.message} Por favor, verifique se o código está correto.`;
+    
+    case ERROR_CODES.NETWORK_ERROR:
+      return `${baseMessage}\n\nOcorreu um erro de conexão com nossos provedores de dados. Por favor, verifique sua conexão ou tente novamente mais tarde.`;
+    
+    default:
+      return `${baseMessage}\n\nOcorreu um erro inesperado. Por favor, tente novamente com uma consulta diferente ou mais tarde.`;
   }
 }
 
@@ -58,7 +101,21 @@ async function generateForexAnalysis(symbol: string): Promise<string> {
     return analysisText;
   } catch (error) {
     console.error(`Erro ao processar par forex ${symbol}:`, error);
-    return `Ocorreu um erro ao buscar dados para o par ${symbol}. Estamos com limitações temporárias de acesso aos dados. Por favor, tente novamente mais tarde.`;
+    
+    const errorData: ErrorData = {
+      code: ERROR_CODES.UNKNOWN_ERROR,
+      message: `Ocorreu um erro ao buscar dados para o par ${symbol}.`
+    };
+    
+    if (error && typeof error === 'object' && 'code' in error) {
+      errorData.code = String(error.code);
+      
+      if ('message' in error) {
+        errorData.message = String(error.message);
+      }
+    }
+    
+    return createErrorAnalysis(errorData);
   }
 }
 
@@ -74,7 +131,7 @@ async function generateStockAnalysis(symbol: string): Promise<string> {
     
     let newsText = 'Nenhuma notícia recente disponível.';
     if (news && news.length > 0) {
-      newsText = news.map((n: any) => {
+      newsText = news.map((n) => {
         const date = n.datetime ? new Date(n.datetime * 1000).toLocaleDateString() : 'Data não disponível';
         return `• ${n.headline || 'Sem título'} (${date})`;
       }).join('\n');
@@ -89,6 +146,20 @@ async function generateStockAnalysis(symbol: string): Promise<string> {
     return `${symbol} - Análise de Mercado em Tempo Real:\n\nVisão Geral da Empresa:\n${profile.companyName || symbol} é uma empresa ${profile.sector ? `do setor ${profile.sector}` : ''} ${profile.country ? `com sede em ${profile.country}` : ''}.\n\nMétricas Financeiras Chave:\n• Valor de Mercado: $${(profile.mktCap / 1e9).toFixed(2)} bilhões\n• Índice P/L: ${profile.pe || 'N/A'}\n• Dividend Yield: ${profile.dividendYield ? profile.dividendYield + '%' : 'N/A'}\n• Setor: ${profile.sector || 'N/A'}\n\nDesempenho Recente:\n• Preço Atual: $${quote.price}\n• Variação do Dia: ${quote.change} (${quote.changesPercentage})\n\nNotícias Recentes:\n${newsText}\n\nResumo:\nCom base nos dados atuais e sentimento ${sentimento} do mercado, ${profile.companyName || symbol} apresenta um desempenho financeiro que deve ser monitorado de perto, considerando as notícias recentes e indicadores financeiros.`;
   } catch (error) {
     console.error(`Erro ao processar ação ${symbol}:`, error);
-    return `Ocorreu um erro ao buscar dados para a ação ${symbol}. Estamos com limitações temporárias de acesso aos dados. Por favor, tente novamente mais tarde.`;
+    
+    const errorData: ErrorData = {
+      code: ERROR_CODES.UNKNOWN_ERROR,
+      message: `Ocorreu um erro ao buscar dados para a ação ${symbol}.`
+    };
+    
+    if (error && typeof error === 'object' && 'code' in error) {
+      errorData.code = String(error.code);
+      
+      if ('message' in error) {
+        errorData.message = String(error.message);
+      }
+    }
+    
+    return createErrorAnalysis(errorData);
   }
 }
