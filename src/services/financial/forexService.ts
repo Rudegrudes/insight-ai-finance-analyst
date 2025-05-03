@@ -1,6 +1,5 @@
-
 // Forex data fetching and processing
-import { FINNHUB_API_KEY, simulatedForexRates, ERROR_CODES } from './constants';
+import { FINNHUB_API_KEY, simulatedForexRates, ERROR_CODES, SIMULATED_DATA_TIMESTAMP } from './constants';
 import type { ForexData, FinnhubForexResponse, ErrorData } from './types';
 
 /**
@@ -20,7 +19,8 @@ export async function fetchForexRates(baseCurrency: string, quoteCurrency: strin
         console.log(`Taxa forex recebida: ${data.quote[quoteCurrency]}`);
         return { 
           rate: data.quote[quoteCurrency],
-          timestamp: Date.now()
+          timestamp: Date.now(),
+          simulated: false
         };
       }
       
@@ -31,8 +31,13 @@ export async function fetchForexRates(baseCurrency: string, quoteCurrency: strin
         'Finnhub API'
       );
     } else {
-      const errorText = `Resposta da API Finnhub: ${response.status} ${response.statusText}`;
+      const errorStatus = `${response.status} ${response.statusText}`;
+      const errorText = `Resposta da API Finnhub: ${errorStatus}`;
       console.error(errorText);
+      
+      // Try alternative API if available
+      // Currently falling back to simulated data
+      
       throw createError(
         ERROR_CODES.API_UNAVAILABLE,
         errorText,
@@ -57,7 +62,7 @@ function handleForexError(baseCurrency: string, quoteCurrency: string, error: un
     return { 
       rate: simulatedForexRates[pair], 
       simulated: true,
-      timestamp: Date.now()
+      timestamp: SIMULATED_DATA_TIMESTAMP
     };
   }
   
@@ -67,7 +72,7 @@ function handleForexError(baseCurrency: string, quoteCurrency: string, error: un
     return { 
       rate: 1 / simulatedForexRates[reversePair], 
       simulated: true,
-      timestamp: Date.now()
+      timestamp: SIMULATED_DATA_TIMESTAMP
     };
   }
   
@@ -76,7 +81,7 @@ function handleForexError(baseCurrency: string, quoteCurrency: string, error: un
   return { 
     rate: Math.random() * 2 + 0.5, 
     simulated: true,
-    timestamp: Date.now()
+    timestamp: SIMULATED_DATA_TIMESTAMP
   };
 }
 

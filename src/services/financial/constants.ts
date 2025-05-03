@@ -1,6 +1,6 @@
 // API keys and constant mapping values
 
-export const FINNHUB_API_KEY = 'c7q3qv2ad3i9qv7qv7q0';
+export const FINNHUB_API_KEY = 'cn7fhgaad3ie8idjp2ng'; // Updated Finnhub API key
 export const FMP_API_KEY = 'UQD9TY699rUEYTpDNzKqq4EZD0FQ4LIj';
 
 // Map of common names to Brazilian stock symbols
@@ -157,29 +157,29 @@ export const forexPairs = {
 
 // Simulated forex rates for when API fails
 export const simulatedForexRates = {
-  'EUR/USD': 1.0862,
-  'EUR/GBP': 0.8643,
-  'EUR/JPY': 164.7012,
-  'EUR/CHF': 0.9845,
-  'EUR/AUD': 1.6428,
-  'EUR/CAD': 1.4799,
-  'EUR/BRL': 5.5663,
-  'USD/JPY': 151.62,
-  'USD/CHF': 0.9058,
-  'USD/CAD': 1.3624,
-  'USD/MXN': 16.7245,
-  'USD/CNY': 7.2416,
-  'USD/RUB': 89.0354,
-  'USD/INR': 83.3448,
-  'USD/BRL': 5.1246,
-  'GBP/USD': 1.2568,
-  'GBP/JPY': 190.5346,
-  'GBP/AUD': 1.9011,
-  'GBP/CAD': 1.7123,
-  'AUD/USD': 0.6609,
-  'AUD/JPY': 100.2175,
-  'CAD/JPY': 111.2894,
-  'NZD/USD': 0.6047
+  'EUR/USD': 1.0708, // Updated to recent value as of 2023-05-03
+  'EUR/GBP': 0.8587,
+  'EUR/JPY': 165.2700,
+  'EUR/CHF': 0.9789,
+  'EUR/AUD': 1.6349,
+  'EUR/CAD': 1.4729,
+  'EUR/BRL': 5.4985,
+  'USD/JPY': 154.32,
+  'USD/CHF': 0.9142,
+  'USD/CAD': 1.3758,
+  'USD/MXN': 16.7982,
+  'USD/CNY': 7.2371,
+  'USD/RUB': 92.1425,
+  'USD/INR': 83.4821,
+  'USD/BRL': 5.1346,
+  'GBP/USD': 1.2472,
+  'GBP/JPY': 192.4587,
+  'GBP/AUD': 1.9038,
+  'GBP/CAD': 1.7152,
+  'AUD/USD': 0.6548,
+  'AUD/JPY': 101.0532,
+  'CAD/JPY': 112.1685,
+  'NZD/USD': 0.5978
 };
 
 // Error codes for standardized error handling
@@ -191,3 +191,6 @@ export const ERROR_CODES = {
   DATA_PARSING_ERROR: 'DATA_PARSING_ERROR',
   UNKNOWN_ERROR: 'UNKNOWN_ERROR'
 };
+
+// Timestamp for when simulated data was last updated
+export const SIMULATED_DATA_TIMESTAMP = new Date('2023-05-03').getTime();

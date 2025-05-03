@@ -88,10 +88,14 @@ async function generateForexAnalysis(symbol: string): Promise<string> {
     let analysisText = `${symbol} - Análise de Forex em Tempo Real:\n\nTaxa de câmbio atual: 1 ${baseCurrency} = ${rate.toFixed(4)} ${quoteCurrency}\n\n`;
     
     if (forexData.simulated) {
-      analysisText += "Observação: Os serviços de dados em tempo real estão com acesso limitado. Esta análise está utilizando estimativas aproximadas de mercado.\n\n";
+      const dataDate = new Date(forexData.timestamp).toLocaleDateString();
+      analysisText += `Observação: Os serviços de dados em tempo real estão com acesso limitado. Esta análise está utilizando dados aproximados de mercado de ${dataDate}.\n\n`;
+    } else {
+      const dataTime = new Date(forexData.timestamp).toLocaleString();
+      analysisText += `Dados atualizados em: ${dataTime}\n\n`;
     }
     
-    // Add market analysis based on simulated data
+    // Add market analysis based on data
     const sentiment = rate > 1 ? "forte" : "fraca";
     const volatility = Math.random() > 0.5 ? "alta" : "baixa";
     
