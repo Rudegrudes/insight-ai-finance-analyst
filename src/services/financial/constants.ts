@@ -1,7 +1,7 @@
 // API keys and constant mapping values
 
-export const FINNHUB_API_KEY = 'cn7fhgaad3ie8idjp2ng'; // Updated Finnhub API key
-export const FMP_API_KEY = 'UQD9TY699rUEYTpDNzKqq4EZD0FQ4LIj';
+export const FINNHUB_API_KEY = 'd09tc7hr01qus8rfaki0d09tc7hr01qus8rfakig'; // Updated with user's Finnhub API key
+export const FMP_API_KEY = 'UQD9TY699rUEYTpDNzKqq4EZD0FQ4LIj'; // Confirmed user's FMP API key
 
 // Map of common names to Brazilian stock symbols
 export const companyNameToSymbol = {
