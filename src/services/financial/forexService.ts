@@ -1,3 +1,4 @@
+
 // Forex data fetching and processing
 import { FINNHUB_API_KEY, simulatedForexRates, ERROR_CODES, SIMULATED_DATA_TIMESTAMP } from './constants';
 import type { ForexData, FinnhubForexResponse, ErrorData } from './types';
@@ -11,10 +12,13 @@ export async function fetchForexRates(baseCurrency: string, quoteCurrency: strin
     
     // Try using the Finnhub API
     const url = `https://finnhub.io/api/v1/forex/rates?base=${baseCurrency}&token=${FINNHUB_API_KEY}`;
-    const response = await fetch(url);
+    console.log(`Consultando API: ${url}`);
+    const response = await fetch(url, { cache: 'no-cache' }); // Prevent caching
     
     if (response.ok) {
       const data = await response.json() as FinnhubForexResponse;
+      console.log("Resposta da API Finnhub:", data);
+      
       if (data.quote && data.quote[quoteCurrency]) {
         console.log(`Taxa forex recebida: ${data.quote[quoteCurrency]}`);
         return { 
@@ -31,16 +35,16 @@ export async function fetchForexRates(baseCurrency: string, quoteCurrency: strin
         'Finnhub API'
       );
     } else {
+      const errorText = await response.text();
       const errorStatus = `${response.status} ${response.statusText}`;
-      const errorText = `Resposta da API Finnhub: ${errorStatus}`;
-      console.error(errorText);
+      console.error(`Erro da API Finnhub: ${errorStatus}`, errorText);
       
       // Try alternative API if available
       // Currently falling back to simulated data
       
       throw createError(
         ERROR_CODES.API_UNAVAILABLE,
-        errorText,
+        `Erro ${errorStatus}: ${errorText}`,
         'Finnhub API'
       );
     }

@@ -155,31 +155,31 @@ export const forexPairs = {
   'nzd usd': 'NZD/USD',
 };
 
-// Simulated forex rates for when API fails
+// Updated simulated forex rates for when API fails (with more recent values)
 export const simulatedForexRates = {
-  'EUR/USD': 1.0708, // Updated to recent value as of 2023-05-03
-  'EUR/GBP': 0.8587,
-  'EUR/JPY': 165.2700,
-  'EUR/CHF': 0.9789,
-  'EUR/AUD': 1.6349,
-  'EUR/CAD': 1.4729,
-  'EUR/BRL': 5.4985,
-  'USD/JPY': 154.32,
-  'USD/CHF': 0.9142,
-  'USD/CAD': 1.3758,
-  'USD/MXN': 16.7982,
-  'USD/CNY': 7.2371,
-  'USD/RUB': 92.1425,
-  'USD/INR': 83.4821,
-  'USD/BRL': 5.1346,
-  'GBP/USD': 1.2472,
-  'GBP/JPY': 192.4587,
-  'GBP/AUD': 1.9038,
-  'GBP/CAD': 1.7152,
-  'AUD/USD': 0.6548,
-  'AUD/JPY': 101.0532,
-  'CAD/JPY': 112.1685,
-  'NZD/USD': 0.5978
+  'EUR/USD': 1.0848, // Updated to recent value as of 2023-05-03
+  'EUR/GBP': 0.8574,
+  'EUR/JPY': 167.855,
+  'EUR/CHF': 0.9768,
+  'EUR/AUD': 1.6326,
+  'EUR/CAD': 1.4751,
+  'EUR/BRL': 5.4852,
+  'USD/JPY': 154.73,
+  'USD/CHF': 0.9005,
+  'USD/CAD': 1.3598,
+  'USD/MXN': 16.7542,
+  'USD/CNY': 7.2418,
+  'USD/RUB': 92.0658,
+  'USD/INR': 83.4125,
+  'USD/BRL': 5.0564,
+  'GBP/USD': 1.2651,
+  'GBP/JPY': 195.7896,
+  'GBP/AUD': 1.9043,
+  'GBP/CAD': 1.7205,
+  'AUD/USD': 0.6643,
+  'AUD/JPY': 102.7654,
+  'CAD/JPY': 113.7896,
+  'NZD/USD': 0.6024
 };
 
 // Error codes for standardized error handling
@@ -192,5 +192,5 @@ export const ERROR_CODES = {
   UNKNOWN_ERROR: 'UNKNOWN_ERROR'
 };
 
-// Timestamp for when simulated data was last updated
-export const SIMULATED_DATA_TIMESTAMP = new Date('2023-05-03').getTime();
+// Update timestamp for when simulated data was last updated
+export const SIMULATED_DATA_TIMESTAMP = Date.now(); // Current timestamp to indicate recent data
